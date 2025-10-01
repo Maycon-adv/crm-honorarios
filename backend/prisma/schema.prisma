@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  Admin
+  Dev
+  Collaborator
+}
+
+enum AgreementStatus {
+  OnTime
+  Overdue
+  Paid
+  Cancelled
+}
+
+enum InstallmentStatus {
+  Pending
+  Overdue
+  Paid
+}
+
+enum AgreementType {
+  PreExecution
+  PostExecution
+}
+
+enum PaymentMethod {
+  Boleto
+  Pix
+  Transferencia
+  Cartao
+}
+
+enum NotificationType {
+  Overdue
+  Upcoming
+}
+
+enum TaskStatus {
+  Pending
+  Completed
+}
+
+// Models
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password      String
+  role          UserRole       @default(Collaborator)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  tasks         Task[]
+  activityLogs  ActivityLog[]
+}
+
+model Contact {
+  id            String         @id @default(uuid())
+  name          String
+  email         String?
+  phone         String?
+  document      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  agreements    Agreement[]
+}
+
+model Agreement {
+  id                      String           @id @default(uuid())
+  recordNumber            String           @unique
+  processNumber           String
+  contactId               String
+  responsibleCollaborator String
+  agreementType           AgreementType
+  paymentMethod           PaymentMethod
+  agreedValue             Float
+  agreementDate           String
+  status                  AgreementStatus  @default(OnTime)
+  observations            String?
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  contact                 Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  installments            Installment[]
+  activityLogs            ActivityLog[]
+  notifications           Notification[]
+}
+
+model Installment {
+  id                String             @id @default(uuid())
+  agreementId       String
+  installmentNumber Int
+  value             Float
+  dueDate           String
+  status            InstallmentStatus  @default(Pending)
+  paymentDate       String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  agreement         Agreement          @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+
+  @@unique([agreementId, installmentNumber])
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  userId      String
+  title       String
+  dueDate     String
+  status      TaskStatus   @default(Pending)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id              String             @id @default(uuid())
+  agreementId     String
+  agreementParty  String
+  message         String
+  type            NotificationType
+  date            String
+  createdAt       DateTime           @default(now())
+
+  agreement       Agreement          @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+}
+
+model ActivityLog {
+  id                    String    @id @default(uuid())
+  timestamp             String
+  userId                String
+  userName              String
+  action                String
+  agreementId           String?
+  agreementRecordNumber String?
+  createdAt             DateTime  @default(now())
+
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agreement             Agreement? @relation(fields: [agreementId], references: [id], onDelete: SetNull)
+}
+
+model GoalRecord {
+  id        String   @id @default(uuid())
+  month     String   @unique
+  goal      Float
+  achieved  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

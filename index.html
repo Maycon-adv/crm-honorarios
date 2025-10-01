@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM de Honorários</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --brand-dark-blue: #163e4d;
+            --brand-medium-blue: #175468;
+            --brand-light-blue: #0095b7;
+            --brand-gray: #4e4e4c;
+
+            /* Re-mapping old variables to new ones for compatibility */
+            --brand-primary: var(--brand-dark-blue);
+            --brand-secondary: var(--brand-medium-blue);
+            --brand-accent: var(--brand-light-blue);
+            --brand-light: #778DA9; /* Keep for potential use */
+            --brand-extralight: #E0E1DD; /* Keep for potential use */
+        }
+        .bg-brand-primary { background-color: var(--brand-primary); }
+        .bg-brand-secondary { background-color: var(--brand-secondary); }
+        .bg-brand-accent { background-color: var(--brand-accent); }
+        .text-brand-primary { color: var(--brand-primary); }
+        .text-brand-secondary { color: var(--brand-secondary); }
+        .text-brand-accent { color: var(--brand-accent); }
+        .border-brand-accent { border-color: var(--brand-accent); }
+        .focus\:ring-brand-accent:focus {
+            --tw-ring-color: var(--brand-accent);
+        }
+        .focus\:border-brand-accent:focus {
+            --tw-border-opacity: 1;
+            border-color: var(--brand-accent);
+        }
+        .hover\:bg-brand-accent:hover {
+             background-color: var(--brand-accent);
+        }
+        .hover\:bg-brand-secondary:hover {
+            background-color: var(--brand-secondary);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-100">
+    <!-- The root element for the React app -->
+    <div id="root"></div>
+
+    <!-- External Libraries for Exporting -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.23/dist/jspdf.plugin.autotable.min.js"></script>
+
+    <!-- Main Application Script -->
+    <script type="module" src="/src/index.tsx"></script>
+</body>
+</html>

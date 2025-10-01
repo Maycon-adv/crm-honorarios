@@ -1,0 +1,5 @@
+{
+  "name": "CRM de Honorários",
+  "description": "Um CRM para controle de acordos de pagamento de honorários sucumbenciais, permitindo o gerenciamento de casos, parcelas, pagamentos e status.",
+  "requestFramePermissions": []
+}
