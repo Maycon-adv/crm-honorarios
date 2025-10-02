@@ -61,6 +61,8 @@ npm install
 VITE_API_URL=http://localhost:3001/api
 ```
 
+**Frontend (produção):** copie `.env.production.example` para `.env.production.local` e reutilize as credenciais existentes (o arquivo `.env.production` fica fora do versionamento).
+
 **Backend (backend/.env):**
 ```env
 DATABASE_URL="file:./dev.db"

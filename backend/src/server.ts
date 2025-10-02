@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import cors from 'cors';
+import cors, { CorsOptionsDelegate } from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import contactRoutes from './routes/contactRoutes';
@@ -12,8 +12,43 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+const configuredOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+
+const corsOptions: CorsOptionsDelegate<Request> = (req, callback) => {
+  const origin = req.headers.origin;
+
+  if (!origin) {
+    return callback(null, { origin: true, credentials: true });
+  }
+
+  if (configuredOrigins.includes(origin)) {
+    return callback(null, { origin: true, credentials: true });
+  }
+
+  try {
+    const hostname = new URL(origin).hostname;
+    const allowedHostnames = new Set(['localhost', '127.0.0.1', 'schulze.com.br']);
+    const allowedSuffixes = ['.vercel.app', '.schulze.com.br'];
+
+    const isAllowedHostname =
+      allowedHostnames.has(hostname) ||
+      allowedSuffixes.some(suffix => hostname.endsWith(suffix));
+
+    if (isAllowedHostname) {
+      return callback(null, { origin: true, credentials: true });
+    }
+  } catch (error) {
+    console.warn('Failed to parse origin hostname', origin, error);
+  }
+
+  callback(new Error('Not allowed by CORS'));
+};
+
+// Middleware - CORS configuration (allow localhost, *.vercel.app e dominios schulze)
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check route
@@ -23,7 +58,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 // API Routes
 app.get('/api', (req: Request, res: Response) => {
-  res.json({ message: 'CRM HonorÃ¡rios API' });
+  res.json({ message: 'CRM Honorários API' });
 });
 
 // Auth Routes
@@ -41,7 +76,12 @@ app.use('/api/tasks', taskRoutes);
 // Error handler (must be last)
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Start server (only if not in serverless environment)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(Server running on http://localhost:);
+  });
+}
+
+// Export for Vercel serverless
+export default app;

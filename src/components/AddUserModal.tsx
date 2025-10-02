@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+﻿import React, { useState, FormEvent } from 'react';
 import { useAuthContext, useActivityLogContext } from '../contexts';
 import { UserRole } from '../types';
 import { ICONS } from '../constants';
@@ -10,10 +10,10 @@ interface AddUserModalProps {
 
 const userSchema = z.object({
     name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres."),
-    email: z.string().email("Formato de e-mail inválido.").refine(email => email.endsWith('@schulze.com.br'), {
-        message: "Apenas e-mails institucionais (@schulze.com.br) são permitidos."
+    email: z.string().email("Formato de e-mail invÃ¡lido.").refine(email => email.endsWith('@schulze.com.br'), {
+        message: "Apenas e-mails institucionais (@schulze.com.br) sÃ£o permitidos."
     }),
-    password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres."),
+    password: z.string().min(8, "A senha deve ter no mÃ­nimo 8 caracteres."),
     role: z.nativeEnum(UserRole),
 });
 
@@ -42,7 +42,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose }) => {
         setApiError('');
     };
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setApiError('');
         setSuccess('');
@@ -62,16 +62,22 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose }) => {
             return;
         }
 
-        const addUserResult = addUser(formData.name, formData.email, formData.password, formData.role);
+        try {
+            const addUserResult = await addUser(formData.name, formData.email, formData.password, formData.role);
 
-        if (addUserResult.success) {
-            addLog(`Adicionou o novo usuário: ${formData.name} (${formData.email}).`, currentUser);
-            setSuccess(addUserResult.message);
-            setTimeout(() => {
-                onClose();
-            }, 1500);
-        } else {
-            setApiError(addUserResult.message);
+            if (addUserResult.success) {
+                addLog(`Adicionou o novo usuário: ${formData.name} (${formData.email}).`, currentUser);
+                setSuccess(addUserResult.message);
+                setTimeout(() => {
+                    onClose();
+                }, 1500);
+            } else {
+                setApiError(addUserResult.message);
+            }
+        } catch (error) {
+            console.error('Failed to add user', error);
+            const message = error instanceof Error ? error.message : 'Erro ao cadastrar usuário. Tente novamente.';
+            setApiError(message);
         }
     };
     
@@ -106,7 +112,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose }) => {
                             {getError('email')}
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Senha Provisória</label>
+                            <label className="block text-sm font-medium text-gray-700">Senha ProvisÃ³ria</label>
                             <input type="password" name="password" value={formData.password} onChange={handleChange} className={`mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-accent focus:border-brand-accent ${errors.password && 'border-red-500'}`} />
                             {getError('password')}
                         </div>
@@ -124,7 +130,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose }) => {
                             Cancelar
                         </button>
                         <button type="submit" className="bg-brand-accent text-white font-bold py-2 px-4 rounded-lg hover:bg-brand-secondary transition-colors duration-200">
-                            Salvar Usuário
+                            Salvar usuário
                         </button>
                     </div>
                 </form>
@@ -134,3 +140,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({ onClose }) => {
 };
 
 export default AddUserModal;
+
+
+
+

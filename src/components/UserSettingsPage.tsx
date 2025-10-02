@@ -26,37 +26,42 @@ const UserSettingsPage: React.FC = () => {
         }
     }, []);
 
-    const handlePasswordSubmit = (e: React.FormEvent) => {
+    const handlePasswordSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setPasswordError('');
         setPasswordSuccess('');
 
         if (!currentUser) {
-            setPasswordError("Usuário não autenticado.");
+            setPasswordError('Usuário não autenticado.');
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setPasswordError("As novas senhas não correspondem.");
+            setPasswordError('As novas senhas não correspondem.');
             return;
         }
 
         if (newPassword.length < 8) {
-            setPasswordError("A nova senha deve ter no mínimo 8 caracteres.");
+            setPasswordError('A nova senha deve ter no mínimo 8 caracteres.');
             return;
         }
 
-        const result = updateUserPassword(currentUser.id, currentPassword, newPassword);
-        
-        if (result.success) {
-            setPasswordSuccess(result.message);
-            addLog("Alterou a própria senha.", currentUser);
-            // Clear fields
-            setCurrentPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-        } else {
-            setPasswordError(result.message);
+        try {
+            const result = await updateUserPassword(currentUser.id, currentPassword, newPassword);
+
+            if (result.success) {
+                setPasswordSuccess(result.message);
+                addLog('Alterou a própria senha.', currentUser);
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+            } else {
+                setPasswordError(result.message);
+            }
+        } catch (error) {
+            console.error('Failed to update password', error);
+            const message = error instanceof Error ? error.message : 'Erro ao atualizar senha. Tente novamente.';
+            setPasswordError(message);
         }
     };
     

@@ -81,7 +81,7 @@ const GeminiAIAnalyzer: React.FC<GeminiAIAnalyzerProps> = ({ agreements, stats }
               contents: prompt
             });
 
-            setResult(response.text);
+            setResult(response.text || '');
 
         } catch (e: any) {
             console.error("Error calling Gemini API:", e);

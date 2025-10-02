@@ -37,6 +37,11 @@ const enumMappings = {
     'Pendente': 'Pending',
     'Concluída': 'Completed',
   },
+  userRole: {
+    'Admin': 'Admin',
+    'Dev': 'Dev',
+    'Colaborador': 'Collaborator',
+  },
 };
 
 // Reverse mapping (Backend English -> Frontend Portuguese)
@@ -55,6 +60,9 @@ const reverseEnumMappings = {
   ),
   taskStatus: Object.fromEntries(
     Object.entries(enumMappings.taskStatus).map(([k, v]) => [v, k])
+  ),
+  userRole: Object.fromEntries(
+    Object.entries(enumMappings.userRole).map(([k, v]) => [v, k])
   ),
 };
 
@@ -122,12 +130,26 @@ export const authAPI = {
     password: string;
     role?: string;
   }) => {
+    const payload = {
+      ...userData,
+      role: userData.role ? toBackendEnum(userData.role, 'userRole') : undefined,
+    };
+
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: getHeaders(false),
-      body: JSON.stringify(userData),
+      body: JSON.stringify(payload),
     });
-    return handleResponse<{ user: any; token: string }>(response);
+
+    const result = await handleResponse<{ user: any; token: string }>(response);
+
+    return {
+      ...result,
+      user: {
+        ...result.user,
+        role: toFrontendEnum(result.user.role, 'userRole'),
+      },
+    };
   },
 
   login: async (credentials: { email: string; password: string }) => {
@@ -136,7 +158,16 @@ export const authAPI = {
       headers: getHeaders(false),
       body: JSON.stringify(credentials),
     });
-    return handleResponse<{ user: any; token: string }>(response);
+
+    const result = await handleResponse<{ user: any; token: string }>(response);
+
+    return {
+      ...result,
+      user: {
+        ...result.user,
+        role: toFrontendEnum(result.user.role, 'userRole'),
+      },
+    };
   },
 };
 

@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from '../middleware/auth';
 import { createTaskSchema, updateTaskSchema } from '../validators/taskValidator';
 

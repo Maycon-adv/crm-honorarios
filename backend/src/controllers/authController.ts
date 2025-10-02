@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this';
@@ -71,6 +71,7 @@ export const register = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Erro ao criar usuário',
+      details: process.env.NODE_ENV === 'production' ? undefined : String(error),
     });
   }
 };
@@ -78,6 +79,8 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+
+    console.log('Login attempt for:', email);
 
     // Validate required fields
     if (!email || !password) {
@@ -92,6 +95,8 @@ export const login = async (req: Request, res: Response) => {
       where: { email },
     });
 
+    console.log('User found:', !!user);
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -101,6 +106,8 @@ export const login = async (req: Request, res: Response) => {
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    console.log('Password valid:', isPasswordValid);
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -134,6 +141,7 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Erro ao fazer login',
+      details: String(error),
     });
   }
 };

@@ -38,13 +38,13 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
 // Auth Context
 interface AuthContextType {
-    users: User[];
     currentUser: User | null;
     isLoading: boolean;
-    addUser: (name: string, email: string, password: string, role: UserRole) => { success: boolean, message: string };
-    login: (email: string, password: string) => { success: boolean, message: string };
+    error: string | null;
+    addUser: (name: string, email: string, password: string, role: UserRole) => Promise<{ success: boolean, message: string }>;
+    login: (email: string, password: string) => Promise<{ success: boolean, message: string }>;
     logout: () => void;
-    updateUserPassword: (userId: string, currentPassword: string, newPassword: string) => { success: boolean, message: string };
+    updateUserPassword: (userId: string, currentPassword: string, newPassword: string) => Promise<{ success: boolean, message: string }>;
 }
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuthContext = () => {
@@ -62,10 +62,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 interface AgreementsContextType {
     agreements: Agreement[];
     isLoading: boolean;
-    addAgreement: (agreement: Omit<Agreement, 'id' | 'status'>) => Agreement;
-    updateAgreement: (agreement: Agreement) => Agreement;
-    deleteAgreement: (agreementId: string) => void;
-    updateInstallment: (agreementId: string, installmentId: string, updatedInstallment: any) => void;
+    error: string | null;
+    addAgreement: (agreement: Omit<Agreement, 'id' | 'status'>) => Promise<Agreement>;
+    updateAgreement: (agreement: Agreement) => Promise<Agreement>;
+    deleteAgreement: (agreementId: string) => Promise<void>;
+    updateInstallment: (agreementId: string, installmentId: string, updatedInstallment: any) => Promise<void>;
 }
 export const AgreementsContext = createContext<AgreementsContextType | undefined>(undefined);
 export const useAgreementsContext = () => {
@@ -100,9 +101,10 @@ export const ActivityLogProvider = ({ children }: PropsWithChildren) => {
 interface ContactsContextType {
     contacts: Contact[];
     isLoading: boolean;
-    addContact: (contact: Omit<Contact, 'id'>) => Contact;
-    updateContact: (contact: Contact) => Contact;
-    deleteContact: (contactId: string) => void;
+    error: string | null;
+    addContact: (contact: Omit<Contact, 'id'>) => Promise<Contact>;
+    updateContact: (contact: Contact) => Promise<Contact>;
+    deleteContact: (contactId: string) => Promise<void>;
 }
 export const ContactsContext = createContext<ContactsContextType | undefined>(undefined);
 export const useContactsContext = () => {
@@ -119,9 +121,10 @@ export const ContactsProvider = ({ children }: PropsWithChildren) => {
 interface TasksContextType {
     tasks: Task[];
     isLoading: boolean;
-    addTask: (title: string, dueDate: string, userId: string) => Task;
-    updateTaskStatus: (taskId: string, status: TaskStatus) => void;
-    deleteTask: (taskId: string) => void;
+    error: string | null;
+    addTask: (title: string, dueDate: string, userId: string) => Promise<Task>;
+    updateTaskStatus: (taskId: string, status: TaskStatus) => Promise<void>;
+    deleteTask: (taskId: string) => Promise<void>;
 }
 export const TasksContext = createContext<TasksContextType | undefined>(undefined);
 export const useTasksContext = () => {

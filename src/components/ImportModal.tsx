@@ -30,20 +30,20 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose }) => {
         }
 
         const reader = new FileReader();
-        reader.onload = (event) => {
+        reader.onload = async (event) => {
             const csv = event.target?.result as string;
             try {
                 const lines = csv.split('\n').slice(1); // Skip header
                 let importedCount = 0;
-                lines.forEach(line => {
-                    if (line.trim() === '') return;
+                for (const line of lines) {
+                    if (line.trim() === '') continue;
                     
                     const [partyName, recordNumber, processNumber, agreedValueStr, agreementDate, installmentsCountStr] = line.split(',');
 
                     if (partyName && recordNumber && agreedValueStr && agreementDate && installmentsCountStr) {
                         let contact = contacts.find(c => c.name.toLowerCase() === partyName.trim().toLowerCase());
                         if (!contact) {
-                           contact = addContact({ name: partyName.trim() });
+                           contact = await addContact({ name: partyName.trim() });
                         }
 
                         const agreedValue = Number(agreedValueStr);
@@ -80,10 +80,10 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose }) => {
                             installments: finalInstallments,
                             status: status,
                         };
-                        addAgreement(newAgreement as Omit<Agreement, 'id' | 'status'>);
+                        await addAgreement(newAgreement as Omit<Agreement, 'id' | 'status'>);
                         importedCount++;
                     }
-                });
+                }
                 setFeedback(`${importedCount} acordos importados com sucesso!`);
             } catch (error) {
                 setFeedback('Erro ao processar o arquivo. Verifique o formato do CSV.');

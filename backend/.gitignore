@@ -7,3 +7,7 @@ dist
 *.db
 *.db-journal
 .DS_Store
+
+.vercel
+.env.production
+.env.production.local
