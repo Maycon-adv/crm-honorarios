@@ -52,13 +52,44 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check route
-app.get('/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok', message: 'Server is running' });
+app.get('/health', async (_req: Request, res: Response) => {
+  try {
+    const { PrismaClient } = await import('@prisma/client');
+    const prisma = new PrismaClient();
+
+    // Test database connection
+    await prisma.$connect();
+    const userCount = await prisma.user.count();
+    await prisma.$disconnect();
+
+    res.json({
+      status: 'ok',
+      message: 'Server is running',
+      database: 'connected',
+      userCount,
+      env: {
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        hasJwtSecret: !!process.env.JWT_SECRET,
+        nodeEnv: process.env.NODE_ENV,
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Database connection failed',
+      error: String(error),
+      env: {
+        hasDatabaseUrl: !!process.env.DATABASE_URL,
+        hasJwtSecret: !!process.env.JWT_SECRET,
+        nodeEnv: process.env.NODE_ENV,
+      }
+    });
+  }
 });
 
 // API Routes
 app.get('/api', (req: Request, res: Response) => {
-  res.json({ message: 'CRM Honorários API' });
+  res.json({ message: 'CRM Honorï¿½rios API' });
 });
 
 // Auth Routes
