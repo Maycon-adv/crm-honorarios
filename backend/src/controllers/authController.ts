@@ -81,6 +81,10 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     console.log('Login attempt for:', email);
+    console.log('Environment check:', {
+      hasDatabaseUrl: !!process.env.DATABASE_URL,
+      hasJwtSecret: !!process.env.JWT_SECRET,
+    });
 
     // Validate required fields
     if (!email || !password) {
@@ -91,6 +95,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Find user
+    console.log('Attempting to find user...');
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -105,6 +110,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Verify password
+    console.log('Verifying password...');
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     console.log('Password valid:', isPasswordValid);
@@ -117,12 +123,14 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Generate JWT
+    console.log('Generating JWT...');
     const token = jwt.sign(
       { userId: user.id, email: user.email, role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
 
+    console.log('Login successful');
     res.json({
       success: true,
       data: {
