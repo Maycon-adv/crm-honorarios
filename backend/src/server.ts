@@ -110,7 +110,7 @@ app.use(errorHandler);
 // Start server (only if not in serverless environment)
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    console.log(Server running on http://localhost:);
+    console.log(`Server running on http://localhost:${PORT}`);
   });
 }
 
