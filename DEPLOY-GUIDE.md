@@ -47,16 +47,32 @@ npx vercel --prod
 **Após o deploy, você receberá uma URL como:**
 `https://crm-honorarios-backend.vercel.app`
 
-### 4️⃣ Configurar Frontend para usar Backend em Produção
+### 4️⃣ Configurar Variáveis de Ambiente no Vercel (Frontend)
 
-Você precisará atualizar o código do frontend para usar a URL do backend em produção.
+O frontend já possui o arquivo `.env.production.local` configurado, mas você precisa adicionar essas variáveis no Vercel:
 
-1. Anote a URL do backend que recebeu no passo 3
-2. Execute os comandos abaixo (vou fazer isso para você depois)
+1. Acesse o projeto do frontend no Vercel Dashboard
+2. Vá em **Settings** → **Environment Variables**
+3. Adicione as seguintes variáveis:
+
+| Nome | Valor | Environments |
+|------|-------|--------------|
+| `VITE_API_URL` | `https://crm-honorarios-backend.vercel.app/api` | Production, Preview |
+| `GEMINI_API_KEY` | *(sua chave do Gemini)* | Production, Preview |
+
+**⚠️ Importante:** Substitua a URL do backend pela URL real que você recebeu no passo 3.
+
+4. Faça um novo deploy do frontend para aplicar as variáveis:
+
+```bash
+git push origin main
+# ou
+vercel --prod
+```
 
 ### 5️⃣ Rodar Migrações do Prisma
 
-Depois do deploy do backend:
+Depois do deploy do backend, você precisa criar as tabelas no PostgreSQL:
 
 ```bash
 cd C:\Users\mayco\crm-honorarios\backend
@@ -65,10 +81,17 @@ npx prisma migrate deploy
 
 ### 6️⃣ Popular o Banco (Seed)
 
+Cria o usuário admin inicial:
+
+- **Email:** `admin@crm.com`
+- **Senha:** `admin123`
+
 ```bash
 cd C:\Users\mayco\crm-honorarios\backend
 npx prisma db seed
 ```
+
+**⚠️ Atenção:** Altere a senha do admin após o primeiro login!
 
 ---
 
@@ -79,6 +102,32 @@ Depois de criar o banco no Vercel e configurar as variáveis de ambiente, rode:
 ```bash
 cd C:\Users\mayco\crm-honorarios\backend && npx vercel --prod
 ```
+
+---
+
+## ✅ Verificações Finais
+
+### 1. CORS está configurado
+
+O backend já aceita requisições de:
+
+- `localhost` (desenvolvimento)
+- `*.vercel.app` (Vercel deployments)
+- `*.schulze.com.br` (domínio custom)
+
+### 2. Variáveis de Ambiente Backend
+
+Certifique-se de configurar no Vercel (backend):
+
+- `DATABASE_URL` - URL do PostgreSQL (POSTGRES_PRISMA_URL)
+- `JWT_SECRET` - Chave secreta para tokens (gere uma senha forte)
+- `CORS_ALLOWED_ORIGINS` (opcional) - URLs adicionais permitidas
+
+### 3. Seed do Prisma
+
+O arquivo `backend/prisma/seed.ts` já está configurado e cria:
+
+- 1 usuário admin (email: `admin@crm.com`, senha: `admin123`)
 
 ---
 
