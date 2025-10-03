@@ -1,3 +1,9 @@
-import app from '../src/server';
+// Handler for Vercel serverless function
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-export default app;
+// Import the Express app
+const app = require('../src/server').default;
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  return app(req, res);
+}
