@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors, { CorsOptionsDelegate } from 'cors';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/authRoutes';
 import contactRoutes from './routes/contactRoutes';
 import agreementRoutes from './routes/agreementRoutes';
@@ -47,9 +48,28 @@ const corsOptions: CorsOptionsDelegate<Request> = (req, callback) => {
   callback(new Error('Not allowed by CORS'));
 };
 
+// Rate limiting for auth routes (prevent brute force attacks)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 login requests per windowMs
+  message: 'Muitas tentativas de login. Tente novamente em 15 minutos.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// General API rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Muitas requisições. Tente novamente em 15 minutos.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // Middleware - CORS configuration (allow localhost, *.vercel.app e dominios schulze)
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use('/api', apiLimiter); // Apply to all API routes
 
 // Health check route
 app.get('/health', (_req: Request, res: Response) => {
@@ -65,12 +85,12 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // API Routes
-app.get('/api', (req: Request, res: Response) => {
-  res.json({ message: 'CRM Honor�rios API' });
+app.get('/api', (_req: Request, res: Response) => {
+  res.json({ message: 'CRM Honorários API' });
 });
 
-// Auth Routes
-app.use('/api/auth', authRoutes);
+// Auth Routes (with stricter rate limiting)
+app.use('/api/auth', authLimiter, authRoutes);
 
 // Contact Routes (protected)
 app.use('/api/contacts', contactRoutes);

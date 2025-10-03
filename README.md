@@ -14,10 +14,11 @@ Sistema completo de gerenciamento de honorários advocatícios com frontend Reac
 - **Node.js** com Express
 - **TypeScript** - Tipagem estática
 - **Prisma ORM** - Gerenciamento de banco de dados
-- **SQLite** - Banco de dados
+- **PostgreSQL** - Banco de dados (produção) / SQLite (desenvolvimento)
 - **JWT** - Autenticação
 - **bcrypt** - Hash de senhas
 - **Zod** - Validação de dados
+- **express-rate-limit** - Proteção contra ataques de força bruta
 
 ## 📋 Funcionalidades
 
@@ -129,24 +130,27 @@ crm-honorarios/
 
 ## 🔐 API Endpoints
 
-### Autenticação
-- `POST /api/auth/register` - Registrar novo usuário
-- `POST /api/auth/login` - Login
+📖 **Documentação completa da API:** [API.md](./API.md)
 
-### Contatos
+### Principais Endpoints
+
+**Autenticação:**
+- `POST /api/auth/register` - Registrar novo usuário
+- `POST /api/auth/login` - Login (max 5 tentativas/15min)
+
+**Contatos:**
 - `GET /api/contacts` - Listar contatos
 - `POST /api/contacts` - Criar contato
 - `PUT /api/contacts/:id` - Atualizar contato
 - `DELETE /api/contacts/:id` - Deletar contato
 
-### Acordos
+**Acordos:**
 - `GET /api/agreements` - Listar acordos
 - `POST /api/agreements` - Criar acordo
 - `PUT /api/agreements/:id` - Atualizar acordo
 - `DELETE /api/agreements/:id` - Deletar acordo
-- `PUT /api/agreements/:agreementId/installments/:installmentId` - Atualizar parcela
 
-### Tarefas
+**Tarefas:**
 - `GET /api/tasks` - Listar tarefas
 - `POST /api/tasks` - Criar tarefa
 - `PUT /api/tasks/:id` - Atualizar tarefa
@@ -166,9 +170,11 @@ O sistema possui mapeamento automático entre valores em português (frontend) e
 - Backend: Validação com Zod schemas
 
 ### Segurança
-- Senhas hasheadas com bcrypt
-- Autenticação JWT
-- Tokens com expiração de 7 dias
+- Senhas hasheadas com bcrypt (salt rounds: 10)
+- Autenticação JWT com tokens de 7 dias
+- Rate limiting (5 tentativas de login por 15 min)
+- CORS configurado para domínios permitidos
+- Validação de dados no backend e frontend
 
 ## 📝 Scripts Disponíveis
 
@@ -182,9 +188,25 @@ O sistema possui mapeamento automático entre valores em português (frontend) e
 - `npm run dev` - Inicia servidor em modo dev
 - `npm run build` - Compila TypeScript
 - `npm run start` - Inicia servidor compilado
+- `npm run vercel-build` - Build para produção (Vercel)
 - `npm run prisma:migrate` - Executa migrações
 - `npm run prisma:generate` - Gera Prisma Client
-- `npm run seed` - Popula banco com dados iniciais
+- `npm run prisma:seed` - Popula banco com dados iniciais
+
+## 🚀 Deploy
+
+### Produção (Vercel)
+
+O projeto está configurado para deploy no Vercel. Consulte o [DEPLOY-GUIDE.md](./DEPLOY-GUIDE.md) para instruções detalhadas.
+
+**URLs de Produção:**
+- Frontend: `https://crm-honorarios.vercel.app`
+- Backend: `https://crm-honorarios-backend.vercel.app`
+
+**Pré-requisitos para deploy:**
+1. Conta no Vercel
+2. Banco de dados PostgreSQL (Neon ou Vercel Postgres)
+3. Variáveis de ambiente configuradas
 
 ## 🤝 Contribuindo
 

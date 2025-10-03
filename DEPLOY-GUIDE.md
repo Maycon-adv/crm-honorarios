@@ -129,6 +129,13 @@ O arquivo `backend/prisma/seed.ts` já está configurado e cria:
 
 - 1 usuário admin (email: `admin@crm.com`, senha: `admin123`)
 
+### 4. Rate Limiting Configurado
+
+O backend possui proteção contra ataques de força bruta:
+
+- **Rotas de autenticação:** Máximo 5 tentativas a cada 15 minutos
+- **API geral:** Máximo 100 requisições a cada 15 minutos
+
 ---
 
 ## ⚠️ Importante:
@@ -141,6 +148,62 @@ O arquivo `backend/prisma/seed.ts` já está configurado e cria:
 
 ## 🔧 Troubleshooting:
 
-Se der erro de "Module not found" no Vercel:
+### Erro "FUNCTION_INVOCATION_FAILED" no Vercel
+
+**Problema:** O backend retorna erro 500 e falha ao iniciar.
+
+**Solução:**
+1. Certifique-se de que o script `vercel-build` está no `package.json`:
+   ```json
+   "scripts": {
+     "vercel-build": "npx prisma generate && npm run build"
+   }
+   ```
+
+2. Verifique se existe o arquivo `backend/api/index.js`:
+   ```javascript
+   const app = require('../dist/server').default;
+   module.exports = app;
+   ```
+
+3. Verifique se o `vercel.json` está configurado corretamente:
+   ```json
+   {
+     "version": 2,
+     "builds": [
+       {
+         "src": "api/index.js",
+         "use": "@vercel/node"
+       }
+     ],
+     "routes": [
+       {
+         "src": "/(.*)",
+         "dest": "/api/index.js"
+       }
+     ]
+   }
+   ```
+
+### Domínio principal não atualiza
+
+**Problema:** O domínio `crm-honorarios-backend.vercel.app` não aponta para o último deployment.
+
+**Solução:**
+```bash
+cd backend
+vercel alias set [URL_DO_NOVO_DEPLOYMENT] crm-honorarios-backend.vercel.app
+```
+
+### Erro "Module not found" no Vercel
+
 - Verifique se o `vercel.json` está correto
 - Rode `npm install` no backend antes do deploy
+- Certifique-se de que todas as dependências estão em `dependencies` (não em `devDependencies`)
+
+### Erro de CORS
+
+Se o frontend não conseguir se conectar ao backend:
+- Verifique se a URL do frontend está nas origens permitidas
+- O backend já aceita `*.vercel.app` automaticamente
+- Para domínios customizados, adicione à variável `CORS_ALLOWED_ORIGINS`
