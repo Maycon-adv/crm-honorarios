@@ -47,3 +47,5 @@ Thumbs.db
 
 # Lock files (escolha um: npm ou pnpm)
 pnpm-lock.yaml
+/gh-cli/
+gh.zip

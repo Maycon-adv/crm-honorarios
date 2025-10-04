@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import * as Sentry from "@sentry/react";
 import LogRocket from 'logrocket';
 import App from './App';
+import './styles/brand.css';
 
 // Initialize LogRocket
 const logRocketAppId = import.meta.env.VITE_LOGROCKET_APP_ID || 'drznes/crm-schulze';
