@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import * as Sentry from "@sentry/react";
 import LogRocket from 'logrocket';
 import App from './App';
+import '../index.css';
 import './styles/brand.css';
 
 // Initialize LogRocket
