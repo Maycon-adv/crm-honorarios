@@ -34,7 +34,7 @@ export const useTasks = () => {
         fetchTasks();
     }, []);
 
-    const addTask = useCallback(async (title: string, dueDate: string, userId: string) => {
+    const addTask = useCallback(async (title: string, dueDate: string, _userId: string) => {
         try {
             setError(null);
             const newTask = await tasksAPI.create({

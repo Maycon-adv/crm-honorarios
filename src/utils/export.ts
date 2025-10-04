@@ -75,12 +75,12 @@ export const exportToMD = (data: any[], filename: string) => {
 };
 
 
-export const exportToPDF = (data: any[], filename: string) => {
+export const exportToPDF = (data: any[], _filename: string) => {
     // A simple text-based "PDF" via window.print
     const headers = getHeaders();
     const rows = data.map(agreementToRow);
     
-    let html = `
+    const html = `
         <html>
             <head>
                 <title>Relatório de Acordos</title>

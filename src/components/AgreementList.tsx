@@ -105,7 +105,7 @@ const AgreementList: FC = () => {
     }, [agreementsWithContactInfo, searchTerm, advancedFilters]);
 
     const sortedAgreements = useMemo(() => {
-        let sortableItems = [...filteredAgreements];
+        const sortableItems = [...filteredAgreements];
         if (sortConfig !== null) {
             sortableItems.sort((a, b) => {
                 if (a[sortConfig.key] < b[sortConfig.key]) {

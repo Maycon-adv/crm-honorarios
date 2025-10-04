@@ -72,7 +72,7 @@ const UserSettingsPage: React.FC = () => {
             }
             localStorage.setItem(WEBHOOK_URL_KEY, webhookUrl);
             setWebhookFeedback({ type: 'success', text: 'URL do Webhook salva com sucesso!' });
-        } catch (error) {
+        } catch {
             setWebhookFeedback({ type: 'error', text: 'URL inválida. Por favor, insira uma URL completa.' });
         }
          setTimeout(() => setWebhookFeedback(null), 3000);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useActivityLogContext } from '../contexts';
-import { ICONS } from '../constants';
+import { ICONS as _ } from '../constants';
 
 const ActivityLogPage: React.FC = () => {
     const { logs, isLoading } = useActivityLogContext();

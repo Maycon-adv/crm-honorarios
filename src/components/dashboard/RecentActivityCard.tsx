@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Agreement, Installment, InstallmentStatus } from '../../types';
+import { Agreement, Installment as _Installment, InstallmentStatus } from '../../types';
 import { formatCurrency, formatDate } from '../../utils/helpers';
 
 interface RecentActivityCardProps {

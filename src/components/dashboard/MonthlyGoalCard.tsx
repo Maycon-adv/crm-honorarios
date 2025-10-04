@@ -19,7 +19,7 @@ const MonthlyGoalCard: React.FC<MonthlyGoalCardProps> = ({ receivedThisMonth }) 
     });
     const [isEditingGoal, setIsEditingGoal] = useState(false);
     const [goalInput, setGoalInput] = useState<string>(String(monthlyGoal));
-    const [goalHistory, setGoalHistory] = useState<GoalRecord[]>(() => {
+    const [_goalHistory, _setGoalHistory] = useState<GoalRecord[]>(() => {
          try {
             const savedHistory = localStorage.getItem('goalHistory');
             return savedHistory ? JSON.parse(savedHistory) : [];

@@ -7,24 +7,30 @@ import '../index.css';
 import './styles/brand.css';
 
 // Initialize LogRocket
-const logRocketAppId = import.meta.env.VITE_LOGROCKET_APP_ID || 'drznes/crm-schulze';
-if (logRocketAppId && logRocketAppId !== 'false') {
-  LogRocket.init(logRocketAppId, {
-    release: import.meta.env.VITE_APP_VERSION || '1.0.0',
-    network: {
-      requestSanitizer: (request) => {
-        // Sanitize sensitive data from requests
-        if (request.headers['Authorization']) {
-          request.headers['Authorization'] = '[REDACTED]';
-        }
-        return request;
+const logRocketAppId = import.meta.env.VITE_LOGROCKET_APP_ID;
+if (logRocketAppId && logRocketAppId !== 'false' && logRocketAppId.trim() !== '') {
+  try {
+    LogRocket.init(logRocketAppId, {
+      release: import.meta.env.VITE_APP_VERSION || '1.0.0',
+      network: {
+        requestSanitizer: (request) => {
+          // Sanitize sensitive data from requests
+          if (request.headers['Authorization']) {
+            request.headers['Authorization'] = '[REDACTED]';
+          }
+          return request;
+        },
       },
-    },
-  });
+    });
 
-  // Note: setupLogRocketReact removed due to React 19 incompatibility
-  // LogRocket core functionality still works perfectly!
-  console.log('✅ LogRocket initialized:', logRocketAppId);
+    // Note: setupLogRocketReact removed due to React 19 incompatibility
+    // LogRocket core functionality still works perfectly!
+    console.log('✅ LogRocket initialized:', logRocketAppId);
+  } catch (error) {
+    console.error('❌ LogRocket initialization failed:', error);
+  }
+} else {
+  console.warn('⚠️ LogRocket not initialized: VITE_LOGROCKET_APP_ID not configured');
 }
 
 // Initialize Sentry

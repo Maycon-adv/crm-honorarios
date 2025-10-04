@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useAgreementsContext, useAuthContext } from '../contexts';
+import { useAgreementsContext, useAuthContext as _useAuthContext } from '../contexts';
 import { AgreementType, PaymentMethod, InstallmentStatus } from '../types';
 import { formatCurrency } from '../utils/helpers';
 

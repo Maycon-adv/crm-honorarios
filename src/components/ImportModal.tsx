@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ICONS } from '../constants';
 import { useAgreementsContext, useContactsContext, useAuthContext } from '../contexts';
-import { Agreement, AgreementType, Contact, Installment, InstallmentStatus, PaymentMethod } from '../types';
-import { getTodayISO } from '../utils/helpers';
+import { Agreement, AgreementType, Contact as _Contact, Installment, InstallmentStatus, PaymentMethod } from '../types';
+import { getTodayISO as _getTodayISO } from '../utils/helpers';
 import { calculateAgreementStatus, getUpdatedInstallments } from '../utils/agreementLogic';
 
 interface ImportModalProps {

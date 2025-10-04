@@ -91,7 +91,7 @@ const Dashboard: React.FC = () => {
                         const paymentDate = new Date(i.paymentDate + 'T00:00:00');
                         if (isNaN(paymentDate.getTime())) return false;
                         return paymentDate.getMonth() === currentMonth && paymentDate.getFullYear() === currentYear;
-                    } catch (e) {
+                    } catch {
                         return false;
                     }
                 }

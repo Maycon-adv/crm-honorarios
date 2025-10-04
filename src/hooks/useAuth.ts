@@ -81,9 +81,9 @@ export const useAuth = () => {
     }, []);
 
     const updateUserPassword = useCallback(async (
-        userId: string,
-        currentPassword: string,
-        newPassword: string
+        _userId: string,
+        _currentPassword: string,
+        _newPassword: string
     ): Promise<{ success: boolean, message: string }> => {
         // Note: This would need a backend endpoint to update password
         // For now, returning a message that this feature needs backend implementation

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Agreement, InstallmentStatus, Contact } from '../types';
+import { Agreement, InstallmentStatus, Contact as _Contact } from '../types';
 import { ICONS } from '../constants';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import { useContactsContext } from '../contexts';
