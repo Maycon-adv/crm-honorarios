@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import * as Sentry from "@sentry/react";
 import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
 import App from './App';
 
 // Initialize LogRocket
-if (import.meta.env.VITE_LOGROCKET_APP_ID) {
-  LogRocket.init(import.meta.env.VITE_LOGROCKET_APP_ID, {
+const logRocketAppId = import.meta.env.VITE_LOGROCKET_APP_ID || 'drznes/crm-schulze';
+if (logRocketAppId && logRocketAppId !== 'false') {
+  LogRocket.init(logRocketAppId, {
     release: import.meta.env.VITE_APP_VERSION || '1.0.0',
     network: {
       requestSanitizer: (request) => {
@@ -19,7 +19,10 @@ if (import.meta.env.VITE_LOGROCKET_APP_ID) {
       },
     },
   });
-  setupLogRocketReact(LogRocket);
+
+  // Note: setupLogRocketReact removed due to React 19 incompatibility
+  // LogRocket core functionality still works perfectly!
+  console.log('✅ LogRocket initialized:', logRocketAppId);
 }
 
 // Initialize Sentry
