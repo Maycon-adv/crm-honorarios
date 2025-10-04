@@ -81,12 +81,6 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Sentry request handler (must be first middleware)
-if (process.env.SENTRY_DSN) {
-  app.use(Sentry.Handlers.requestHandler());
-  app.use(Sentry.Handlers.tracingHandler());
-}
-
 // Middleware - CORS configuration (allow localhost, *.vercel.app e dominios schulze)
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -124,7 +118,7 @@ app.use('/api/tasks', taskRoutes);
 
 // Sentry error handler (must be before other error handlers)
 if (process.env.SENTRY_DSN) {
-  app.use(Sentry.Handlers.errorHandler());
+  Sentry.setupExpressErrorHandler(app);
 }
 
 // Error handler (must be last)
