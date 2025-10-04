@@ -1,0 +1,74 @@
+name: Database Backup
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  backup:
+    name: Backup PostgreSQL Database
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Create backup
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          # Extract database connection details from DATABASE_URL
+          # Format: postgresql://user:password@host:port/database
+
+          # Create backup directory
+          mkdir -p backups
+
+          # Generate backup filename with timestamp
+          BACKUP_FILE="backups/backup-$(date +%Y%m%d-%H%M%S).sql"
+
+          # Create backup using pg_dump
+          pg_dump "$DATABASE_URL" > "$BACKUP_FILE"
+
+          # Compress backup
+          gzip "$BACKUP_FILE"
+
+          echo "Backup created: ${BACKUP_FILE}.gz"
+
+      - name: Upload backup to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ github.run_number }}
+          path: backups/*.sql.gz
+          retention-days: 30
+
+      - name: Upload to Cloud Storage (Optional)
+        if: false # Enable this by setting to true and configuring cloud provider
+        run: |
+          # Example for AWS S3 (uncomment and configure):
+          # aws s3 cp backups/*.sql.gz s3://your-bucket-name/database-backups/
+
+          # Example for Google Cloud Storage (uncomment and configure):
+          # gsutil cp backups/*.sql.gz gs://your-bucket-name/database-backups/
+
+          # Example for Azure Blob Storage (uncomment and configure):
+          # az storage blob upload-batch -d database-backups -s backups/
+
+          echo "Cloud upload disabled. Enable in workflow file."
+
+      - name: Cleanup old backups (keep last 30 days)
+        run: |
+          find backups -name "*.sql.gz" -mtime +30 -delete
+          echo "Old backups cleaned up"
+
+      - name: Send notification on failure
+        if: failure()
+        run: |
+          echo "Backup failed! Check workflow logs."
+          # Add notification logic here (email, Slack, etc.)

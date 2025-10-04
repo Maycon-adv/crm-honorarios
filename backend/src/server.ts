@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import cors, { CorsOptionsDelegate } from 'cors';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
+import * as Sentry from "@sentry/node";
+import { nodeProfilingIntegration } from "@sentry/profiling-node";
 import authRoutes from './routes/authRoutes';
 import contactRoutes from './routes/contactRoutes';
 import agreementRoutes from './routes/agreementRoutes';
@@ -9,6 +11,19 @@ import taskRoutes from './routes/taskRoutes';
 import { errorHandler } from './middleware/errorHandler';
 
 dotenv.config();
+
+// Initialize Sentry
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV || 'development',
+    integrations: [
+      nodeProfilingIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    profilesSampleRate: 1.0,
+  });
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -66,6 +81,12 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Sentry request handler (must be first middleware)
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.tracingHandler());
+}
+
 // Middleware - CORS configuration (allow localhost, *.vercel.app e dominios schulze)
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -100,6 +121,11 @@ app.use('/api/agreements', agreementRoutes);
 
 // Task Routes (protected)
 app.use('/api/tasks', taskRoutes);
+
+// Sentry error handler (must be before other error handlers)
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.errorHandler());
+}
 
 // Error handler (must be last)
 app.use(errorHandler);

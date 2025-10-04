@@ -31,3 +31,19 @@ backend/.env.local
 backend/.env.*
 .env.production
 .env.production.local
+
+# Test coverage
+coverage
+*.lcov
+
+# Backups
+backend/backups
+*.sql
+*.sql.gz
+
+# Windows
+nul
+Thumbs.db
+
+# Lock files (escolha um: npm ou pnpm)
+pnpm-lock.yaml

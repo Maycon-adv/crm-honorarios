@@ -69,17 +69,112 @@ Todas as mudanças importantes do projeto serão documentadas neste arquivo.
 
 ---
 
+## [1.2.0] - 2025-10-04
+
+### ✅ Adicionado
+
+#### 📊 Monitoramento e Observabilidade
+- **Sentry Integration**
+  - Rastreamento de erros no frontend (React)
+  - Rastreamento de erros no backend (Node.js)
+  - Performance monitoring e profiling
+  - Session replay para erros
+  - Breadcrumbs e contexto de erros
+  - Integração entre frontend e backend
+
+- **LogRocket Integration**
+  - Session replay completo no frontend
+  - Captura de network activity
+  - Console logs tracking
+  - Integração com Sentry (URLs anexadas)
+  - Sanitização de dados sensíveis (tokens, senhas)
+
+#### 🧪 Testes Automatizados
+- **Frontend Testing**
+  - Vitest como framework de testes
+  - @testing-library/react para componentes
+  - @testing-library/jest-dom para assertions
+  - Coverage reports configurados
+  - Exemplo de teste para Dashboard
+  - Scripts: `test`, `test:ui`, `test:coverage`
+
+- **Backend Testing**
+  - Jest como framework de testes
+  - Supertest para testes de API
+  - Mock do Prisma Client
+  - Exemplo de testes para Auth Controller
+  - Coverage reports configurados
+  - Scripts: `test`, `test:watch`, `test:coverage`
+
+#### 🚀 CI/CD Pipeline
+- **GitHub Actions Workflows**
+  - **CI/CD Principal**: Testes, build, deploy automático
+  - **Database Backup**: Backup diário automático
+  - **CodeQL Security**: Análise de segurança semanal
+  - Upload de coverage para Codecov
+  - npm audit automatizado
+  - Deploy para Vercel (branch main)
+
+#### 💾 Sistema de Backup
+- **Script de Backup Automático**
+  - Backup usando pg_dump
+  - Compressão automática (gzip)
+  - Rotação de backups (mantém 7 mais recentes)
+  - Restore de backups
+  - Listagem de backups
+  - CLI: `backup:create`, `backup:list`, `backup:restore`
+  - Backup diário via GitHub Actions
+
+#### 📚 Documentação
+- **GUIA-USUARIO.md**
+  - Documentação completa para usuários finais
+  - 10+ seções incluindo FAQ
+  - Guia passo a passo
+  - Dicas e boas práticas
+  - Glossário de termos
+
+- **MONITORING.md**
+  - Guia de configuração do Sentry
+  - Guia de configuração do LogRocket
+  - Detalhes do CI/CD
+  - Sistema de backup
+  - Métricas e alertas
+  - Troubleshooting
+
+#### 🔧 Configuração
+- Variáveis de ambiente para monitoramento
+- Health check endpoint expandido
+- Configuração de testes no vitest.config.ts
+- Configuração de testes no jest.config.js
+
+### 📝 Alterado
+- README.md atualizado com:
+  - Seção de Monitoramento & Observabilidade
+  - Seção de Qualidade & Automação
+  - Guia de testes
+  - Documentação de backup
+  - Links para guias detalhados
+- package.json com novos scripts de teste e backup
+- Versões atualizadas das dependências
+
+### 📊 Métricas
+- Cobertura de testes inicial implementada
+- Monitoramento completo (frontend e backend)
+- CI/CD totalmente automatizado
+- Backup diário configurado
+- 2 novos guias de documentação
+
+---
+
 ## 🔜 Próximas Versões
 
-### Planejado para v1.2.0
+### Planejado para v1.3.0
 - [ ] Configuração de domínio customizado
-- [ ] Integração com serviço de email para notificações
+- [ ] Integração com serviço de email
 - [ ] Relatórios em PDF exportáveis
 - [ ] Filtros avançados no dashboard
-- [ ] Backup automático de dados
 - [ ] Logs de auditoria detalhados
-- [ ] Testes automatizados (frontend e backend)
-- [ ] CI/CD pipeline
+- [ ] Expansão da cobertura de testes (>80%)
 
 ### Ideias Futuras
 - [ ] Aplicativo mobile (React Native)
@@ -88,5 +183,4 @@ Todas as mudanças importantes do projeto serão documentadas neste arquivo.
 - [ ] Chat interno para colaboração
 - [ ] Notificações push
 - [ ] Dashboard personalizável
-- [ ] Exportação de dados para Excel/CSV
-- [ ] API pública com documentação Swagger
+- [ ] API pública com Swagger
