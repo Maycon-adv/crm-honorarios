@@ -38,6 +38,8 @@ jobs:
           BACKUP_FILE="backups/backup-$(date +%Y%m%d-%H%M%S).sql"
 
           # Create backup using pg_dump
+          export PATH=/usr/lib/postgresql/17/bin:$PATH
+          pg_dump --version
           pg_dump "$DATABASE_URL" > "$BACKUP_FILE"
 
           # Compress backup
