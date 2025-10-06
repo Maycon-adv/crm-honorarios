@@ -3,6 +3,8 @@ import { Agreement, InstallmentStatus } from '../types';
 import { ICONS } from '../constants';
 import { GoogleGenAI } from '@google/genai';
 
+const GEMINI_API_KEY = (import.meta.env.VITE_GEMINI_API_KEY ?? '').trim();
+
 interface GeminiAIAnalyzerProps {
     agreements: Agreement[];
     stats: {
@@ -26,8 +28,8 @@ const GeminiAIAnalyzer: React.FC<GeminiAIAnalyzerProps> = ({ agreements, stats }
             return;
         }
 
-        if (!process.env.API_KEY) {
-            setError("A chave da API Gemini não está configurada.");
+        if (!GEMINI_API_KEY) {
+            setError("A chave da API Gemini não está configurada. Defina VITE_GEMINI_API_KEY nas variáveis de ambiente do frontend ou use um proxy seguro no backend.");
             return;
         }
 
@@ -37,7 +39,7 @@ const GeminiAIAnalyzer: React.FC<GeminiAIAnalyzerProps> = ({ agreements, stats }
 
         try {
             // Fix: Initialize GoogleGenAI with API key from environment variables as per guidelines.
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
             // Create a simplified summary of the data for the prompt
             const dataSummary = {

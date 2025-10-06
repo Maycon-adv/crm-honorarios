@@ -89,6 +89,7 @@ VITE_API_URL=http://localhost:3001/api
 # Opcional - Monitoramento (obtenha em sentry.io e logrocket.com)
 VITE_SENTRY_DSN=
 VITE_LOGROCKET_APP_ID=
+VITE_GEMINI_API_KEY=
 ```
 
 **Frontend (produção):** copie `.env.production.example` para `.env.production.local` e reutilize as credenciais existentes (o arquivo `.env.production` fica fora do versionamento).
@@ -308,6 +309,7 @@ Configure o LogRocket para gravação de sessões:
 3. Adicione o App ID no `.env`:
    ```env
    VITE_LOGROCKET_APP_ID=your-app-id/project-name
+   VITE_GEMINI_API_KEY=your-gemini-api-key
    ```
 
 Consulte o [MONITORING.md](./MONITORING.md) para configuração detalhada.
